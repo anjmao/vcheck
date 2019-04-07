@@ -11,14 +11,17 @@ import (
 )
 
 var (
-	target          = flag.String("target", "", "-target staging.mpost-api.guardtek.net:443")
-	expectedVersion = flag.String("version", "", "Expected version")
-	method          = flag.String("method", "/version.Version/GetVersion", "Version check endpoint path")
-	clientType      = flag.String("client", "grpc", "Version check client type")
-	checkCount      = flag.Int("count", 12, "Check count")
-	sleepAfterCheck = flag.Int("sleep", 5, "Sleep after check in seconds")
-	showHelp        = flag.Bool("help", false, "Show help")
+	target               = flag.String("target", "", "Version check endpoint target")
+	expectedBuildVersion = flag.String("expect", "", "Expected version")
+	method               = flag.String("method", "/version.Version/GetVersion", "Version check endpoint path")
+	clientType           = flag.String("client", "grpc", "Version check client type")
+	checkCount           = flag.Int("count", 12, "Check count")
+	sleepAfterCheck      = flag.Int("sleep", 5, "Sleep after check in seconds")
+	printHelp            = flag.Bool("help", false, "Print help")
+	printVersion         = flag.Bool("version", false, "Print vcheck version")
 )
+
+var Version = "dev"
 
 const checkTimeout = 10 * time.Second
 
@@ -26,14 +29,15 @@ const usageStr = `
 Usage: vcheck [options]
 Options:
 	--target <target>				Target host including port. (e.g --target service.mydomain.com:443)
-	--version <version>				Expected version (e.g -v 1.2.3)
+	--expect <version>				Expected version (e.g -v 1.2.3)
 	--method <method>				Version check endpoint (default: /debug.Debug/GetVersion)
 	--client <client>				Client type (grpc, http)
 	--count	<count>					Check count (default: 12)
 	--sleep	<sleep>					Sleep duration after check in seconds (default: 5)
 
 Other options:
-	--help
+	--help                          Print help
+	--version                       Print vcheck util version
 `
 
 func usage() {
@@ -43,7 +47,13 @@ func usage() {
 
 func main() {
 	flag.Parse()
-	if *showHelp || *target == "" || *expectedVersion == "" {
+
+	if *printVersion {
+		fmt.Println(Version)
+		os.Exit(0)
+	}
+
+	if *printHelp || *target == "" || *expectedBuildVersion == "" {
 		usage()
 	}
 
@@ -59,8 +69,8 @@ func main() {
 			continue
 		}
 		actualVersion = v.BuildVersion
-		fmt.Printf("expected version %s, got %s\n", *expectedVersion, actualVersion)
-		if actualVersion == *expectedVersion {
+		fmt.Printf("expected version %s, got %s\n", *expectedBuildVersion, actualVersion)
+		if actualVersion == *expectedBuildVersion {
 			fmt.Println("deployment successful")
 			return
 		}
@@ -68,7 +78,7 @@ func main() {
 		time.Sleep(sleep)
 	}
 
-	log.Fatalf("deployment failed: expected version %s, got %s\n", *expectedVersion, actualVersion)
+	log.Fatalf("deployment failed: expected version %s, got %s\n", *expectedBuildVersion, actualVersion)
 }
 
 func getVersion(c client.Client) (*client.GetVersionReply, error) {

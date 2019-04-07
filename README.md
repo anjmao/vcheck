@@ -28,7 +28,7 @@ vcheck \
     --target=staging.my.grpcapi.net:443 \
     --method=/version.Version/GetVersion \
     --client=grpc \
-    --version=${MY_CI_BUILD_NUMBER} \
+    --expect=${MY_CI_BUILD_NUMBER} \
     --count=12 \
     --sleep=5
 ```
@@ -43,7 +43,7 @@ vcheck \
     --target=http://staging.my.grpcapi.net \
     --method=/api/version \
     --client=http \
-    --version=${MY_CI_BUILD_NUMBER} \
+    --expect=${MY_CI_BUILD_NUMBER} \
     --count=12 \
     --sleep=5
 ```
@@ -54,4 +54,16 @@ vheck util is also available as a docker image
 
 ```bash
 docker run --rm anjmao:vcheck --help
+```
+
+### Release
+
+Before release install gox and github-release tools
+```bash
+go GO111MODULE=off go get github.com/mitchellh/gox
+go GO111MODULE=off go get github.com/c4milo/github-release 
+```
+
+```bash
+make release
 ```
