@@ -47,3 +47,11 @@ vcheck \
     --count=12 \
     --sleep=5
 ```
+
+### Docker
+
+vheck util is also available as a docker image
+
+```bash
+docker run --rm anjmao:vcheck --help
+```
