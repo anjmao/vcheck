@@ -1,5 +1,5 @@
 # vcheck
-![Docker Pulls](https://img.shields.io/docker/pulls/anjmao/vcheck.svg)
+[![](https://img.shields.io/docker/pulls/anjmao/vcheck.svg)](https://hub.docker.com/r/anjmao/vcheck)
 
 Check your deployed GRPC, HTTP service version to verify if deployment was successful. This is especially well suited for travis, gitlab CI/CD deployments.
 
