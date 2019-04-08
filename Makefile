@@ -1,17 +1,21 @@
 GHACCOUNT := anjmao
 NAME := vcheck
 VERSION := $(shell git describe --tags --always --dirty)
-DOCKER_IMAGE_NAME := $(GHACCOUNT)/$(NAME):$(VERSION)
+DOCKER_IMAGE_NAME := $(GHACCOUNT)/$(NAME)
 LATFORM := $(shell go env | grep GOHOSTOS | cut -d '"' -f 2)
 ARCH := $(shell go env | grep GOARCH | cut -d '"' -f 2)
 BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 LDFLAGS := -ldflags "-X main.Version=$(VERSION)"
 
 container:
-	@docker build --build-arg VERSION=$(VERSION) -t $(DOCKER_IMAGE_NAME) .
+	@docker build \
+		--build-arg VERSION=$(VERSION) \
+		-t $(DOCKER_IMAGE_NAME):$(VERSION) \
+		-t $(DOCKER_IMAGE_NAME):latest .
 
 push:
-	@docker push $(DOCKER_IMAGE_NAME)
+	@docker push $(DOCKER_IMAGE_NAME):$(VERSION)
+	@docker push $(DOCKER_IMAGE_NAME):latest
 
 compile:
 	@rm -rf build/
