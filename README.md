@@ -41,7 +41,7 @@ HTTP service should implement GET endpoint returning JSON with buildVersion fiel
 MY_CI_BUILD_NUMBER=8326
 vcheck \
     --target=http://staging.my.grpcapi.net \
-    --method=/api/version \
+    --method=api/version \
     --client=http \
     --expect=${MY_CI_BUILD_NUMBER} \
     --count=12 \
